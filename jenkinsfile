@@ -1,0 +1,92 @@
+pipeline {
+    agent any
+
+    tools {
+        // Si vous avez des outils installés globalement dans Jenkins (optionnel)
+        nodejs 'NodeJS'  // Nom de l'installation Node.js dans Jenkins
+        jdk 'JDK'        // Si nécessaire pour certaines étapes
+    }
+
+    stages {
+        // Étape 1 : Checkout du code source depuis Git
+        stage('Checkout') {
+            steps {
+                git branch: 'main', 
+                    url: 'https://github.com/ZaidiAm/automation-project-saucedemo'
+            }
+        }
+
+        // Étape 2 : Installation des dépendances Python et Node.js
+        stage('Install Dependencies') {
+            steps {
+                // Installation des dépendances Python (si vous avez un requirements.txt)
+                sh 'pip install -r requirements.txt'
+
+                // Installation des dépendances Node.js (si vous avez un package.json)
+                sh 'npm install'
+            }
+        }
+
+        // Étape 3 : Exécution des tests Robot Framework
+        stage('Robot Framework Tests') {
+            steps {
+                // Supposons que vos tests Robot sont dans le dossier tests/robot
+                sh 'robot --outputdir reports/robot tests/robot/'
+            }
+            post {
+                // Publication des rapports Robot Framework
+                always {
+                    robot outputPath: 'reports/robot'
+                }
+            }
+        }
+
+        // Étape 4 : Exécution des tests Playwright
+        stage('Playwright Tests') {
+            steps {
+                // Exécution des tests Playwright
+                sh 'npx playwright test --reporter=html'
+            }
+            post {
+                // Publication des rapports Playwright
+                always {
+                    publishHTML(target: [
+                        reportDir: 'playwright-report',
+                        reportFiles: 'index.html',
+                        reportName: 'Playwright Report'
+                    ])
+                }
+            }
+        }
+
+        // Étape 5 : Exécution des tests Selenium Python
+        stage('Selenium Tests') {
+            steps {
+                // Exécution des tests Selenium (ex: avec pytest)
+                sh 'pytest tests/selenium/ --html=reports/selenium/report.html --self-contained-html'
+            }
+            post {
+                // Publication des rapports Selenium
+                always {
+                    publishHTML(target: [
+                        reportDir: 'reports/selenium',
+                        reportFiles: 'report.html',
+                        reportName: 'Selenium Report'
+                    ])
+                }
+            }
+        }
+    }
+
+    // Post-build actions (exécutées après toutes les étapes)
+    post {
+        always {
+            // Nettoyage optionnel
+            echo 'Pipeline terminé - voir les rapports ci-dessus'
+        }
+        failure {
+            // Notification en cas d'échec (ex: email, Slack)
+            echo 'Le pipeline a échoué !'
+        }
+    }
+}
