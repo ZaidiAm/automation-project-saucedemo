@@ -1,0 +1,5 @@
+#core dependencies
+selenium==4.39.0
+robotframework==6.1.1
+robotframework-seleniumlibrary==6.8.0
+python==3.14.0

@@ -1,0 +1,27 @@
+{
+  "users": {
+    "standard": {
+      "username": "standard_user",
+      "password": "secret_sauce"
+    }
+  },
+  "urls": {
+    "baseUrl": "https://www.saucedemo.com",
+    "inventoryUrl": "https://www.saucedemo.com/inventory.html"
+  },
+  "selectors": {
+    "usernameInput": "#user-name",
+    "passwordInput": "#password",
+    "loginButton": "#login-button",
+    "productFilter": ".product_sort_container",
+    "productNames": ".inventory_item_name",
+    "productPrices": ".inventory_item_price",
+    "productItems": ".inventory_item"
+  },
+  "filterOptions": {
+    "nameAtoZ": "az",
+    "priceLowToHigh": "lohi",
+    "priceHighToLow": "hilo"
+  },
+  "timeout": 10000
+}
