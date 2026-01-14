@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main', 
-                    url: 'https://github.com/votre-utilisateur/votre-repo.git'
+                    url: : 'https://github.com/ZaidiAm/automation-project-saucedemo.git'
             }
         }
 
